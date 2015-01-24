@@ -20,18 +20,9 @@ public class ModifyTerrain : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-        LoadChunks(player.transform.position,32,48);
+        LoadChunks(player.transform.position,32,34);
 
-	    if (Input.GetMouseButtonDown(0))
-	    {
-            print("pressed 0");
-	        ReplaceBlockCursor(0);
-	    }
-        else if (Input.GetMouseButtonDown(1))
-        {
-            print("pressed 1");
-            AddBlockCursor(1);
-        }
+	    
 	}
 
     public void ReplaceBlockCenter(float range, byte block)
@@ -63,6 +54,26 @@ public class ModifyTerrain : MonoBehaviour
 
     }
 
+	public void AddPlayerCursor(){
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit;
+		if(Physics.Raycast(ray, out hit)){
+			if(! hit.collider.gameObject.tag.Equals("Character")){
+				Vector3 position = hit.point;
+				position += (hit.normal*-0.5f);
+				int x = Mathf.RoundToInt(position.x);
+				int z = Mathf.RoundToInt(position.z);
+				int y = Mathf.RoundToInt(position.y);
+				world.characters[x,z] = 1;
+				Debug.Log ("Adding player at " + x + " , " +y +1 + " , " + z);
+				UpdateChunkAt(x,y,z);
+			}
+		}
+	}
+
+    
+
+
     public void ReplaceBlockCursor(byte block)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -71,7 +82,7 @@ public class ModifyTerrain : MonoBehaviour
         {
             ReplaceBlockAt(hit,  block);
             Debug.DrawLine(ray.origin, ray.origin+(ray.direction * hit.distance), Color.red);
-
+			
         }
     }
 

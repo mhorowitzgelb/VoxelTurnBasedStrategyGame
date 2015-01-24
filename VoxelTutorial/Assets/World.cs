@@ -3,7 +3,10 @@ using System.Collections;
 
 public class World : MonoBehaviour
 {
+	public GameObject grunt;
     public byte[,,] data;
+	public byte[,] characters;
+	public int [,] heightMap;
     public int worldX = 16;
     public int worldY = 16;
     public int worldZ = 16;
@@ -15,6 +18,8 @@ public class World : MonoBehaviour
     private void Start()
     {
         data = new byte[worldX, worldY, worldZ];
+		characters = new byte[worldX, worldZ];
+		heightMap = new int[worldX, worldZ];
         for (int x = 0; x < worldX; x++)
         {
             for (int z = 0; z < worldZ; z++)
@@ -115,7 +120,12 @@ public class World : MonoBehaviour
     {
         for (int y = 0; y < chunks.GetLength(1); y++)
         {
-           Object.Destroy(chunks[x,y,z].gameObject); 
+           Object.Destroy(chunks[x,y,z].gameObject);
+
+			foreach(GameObject obj in chunks[x,y,z].characters){
+				Destroy(obj);	
+			}
+			chunks[x,y,z].characters.Clear();
         }
         
     }
