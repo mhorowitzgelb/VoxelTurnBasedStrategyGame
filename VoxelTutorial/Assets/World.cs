@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class World : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class World : MonoBehaviour
     public byte[,,] data;
 	public byte[,] characters;
 	public int [,] heightMap;
+	public Dictionary<Vector2,bool> selectedTiles;
     public int worldX = 16;
     public int worldY = 16;
     public int worldZ = 16;
@@ -20,6 +22,7 @@ public class World : MonoBehaviour
         data = new byte[worldX, worldY, worldZ];
 		characters = new byte[worldX, worldZ];
 		heightMap = new int[worldX, worldZ];
+		selectedTiles = new Dictionary<Vector2,bool>();
         for (int x = 0; x < worldX; x++)
         {
             for (int z = 0; z < worldZ; z++)

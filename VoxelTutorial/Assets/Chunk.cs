@@ -20,6 +20,7 @@ public class Chunk : MonoBehaviour
     private Vector2 tStone = new Vector2(0,14);
     private Vector2 tGrass =  new Vector2(3,15);
     private Vector2 tGrasstop = new Vector2(0,15);
+	private Vector2 tSelect = new Vector2 (7, 14);
     private Mesh mesh;
     private MeshCollider col;
     private int faceCount;
@@ -72,7 +73,12 @@ public class Chunk : MonoBehaviour
         newVertices.Add(new Vector3(x, y, z));
 
         Vector2 texturePos = new Vector2(0,0);
-        if (Block(x, y, z) == 1)
+
+		if (world.selectedTiles.ContainsKey(new Vector2(chunkX + x, chunkZ + z)
+		         )) {
+			texturePos = tSelect;		
+		}
+		else if (Block(x, y, z) == 1)
         {
             texturePos = tStone;
         }
@@ -94,7 +100,7 @@ public class Chunk : MonoBehaviour
         newVertices.Add(new Vector3(x, y, z + 1));
         newVertices.Add(new Vector3(x, y - 1, z + 1));
         Vector2 texturePos = new Vector2(0, 0);
-        if (Block(x, y, z) == 1)
+		if (Block(x, y, z) == 1)
         {
             texturePos = tStone;
         }
