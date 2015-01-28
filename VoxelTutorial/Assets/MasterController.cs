@@ -37,21 +37,17 @@ public class MasterController : MonoBehaviour {
 	}
 
 	void RecursiveMoves(int moves, int x, int z){
-		if(moves < 0)
+		if(moves < 0 )
 			return;
 		Debug.Log ("moves" + x + " , " + z);
-		world.selectedTiles.Add (new Vector2(x,z), true);
+		if(!world.selectedTiles.ContainsKey(new Vector2(x,z)))
+			world.selectedTiles.Add (new Vector2(x,z), true);
 		world.chunks [x/world.chunkSize, world.heightMap [x, z] / world.chunkSize, z / world.chunkSize].update = true;
 		bool found = false;
-		for (int dX = -1; dX < 2; dX += 2) {
-						for (int dZ = -1; dZ < 2; dZ += 2) {
-								if(!world.selectedTiles.ContainsKey(new Vector2(x + dX,z + dZ))) 
-								{
-										RecursiveMoves (moves - 1, x + dZ, z + dZ); 
-								}
-						}
-		 }
-		 
+		RecursiveMoves (moves - 1, x + 1, z);
+		RecursiveMoves (moves - 1, x - 1, z);
+		RecursiveMoves (moves - 1, x, z + 1);
+		RecursiveMoves (moves - 1, x, z - 1);
 	}
     
 
