@@ -104,7 +104,8 @@ public class ModifyTerrain : MonoBehaviour
 				int x = Mathf.RoundToInt(position.x);
 				int z = Mathf.RoundToInt(position.z);
 				int y = Mathf.RoundToInt(position.y);
-				world.characters[x,z] = 1;
+				GameObject gameObject = Instantiate(world.grunt, new Vector3(x,y+1,z), new Quaternion(0,0,0,0)) as GameObject;
+				world.pieces.Add (gameObject.transform.position, gameObject);
 				Debug.Log ("Adding player at " + x + " , " +y +1 + " , " + z);
 				UpdateChunkAt(x,y,z);
 			}

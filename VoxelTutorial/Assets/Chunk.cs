@@ -36,20 +36,6 @@ public class Chunk : MonoBehaviour
 			}
 			characters.Clear();
 
-			for(int x = chunkX; x < chunkX + chunkSize; x ++){
-				for(int z = chunkZ; z < chunkZ + chunkSize; z ++){
-					for(int y = chunkY; y < chunkY + chunkSize; y ++){	
-						if(world.data[x,y,z] != 0 && world.data[x,y+1,z] == 0){
-							world.heightMap[x,z] = y;
-							break;
-						}
-					}
-
-				}
-			}
-
-
-
             GenerateMesh();
             update = false;
         }
@@ -74,7 +60,7 @@ public class Chunk : MonoBehaviour
 
         Vector2 texturePos = new Vector2(0,0);
 
-		if (world.selectedTiles.ContainsKey(new Vector2(chunkX + x, chunkZ + z)
+		if (world.selectedTiles.ContainsKey(new Vector3(chunkX + x, chunkY + y, chunkZ + z)
 		         )) {
 			texturePos = tSelect;		
 		}
@@ -88,9 +74,6 @@ public class Chunk : MonoBehaviour
         }
 
         Cube(texturePos);
-		if (world.characters [chunkX +x, chunkZ + z] != 0) {
-			characters.Add(Instantiate (world.grunt, new Vector3 (chunkX +x, world.heightMap[chunkX + x, chunkZ + z] + 1, chunkZ + z), new Quaternion (0, 0, 0, 0)) as GameObject);
-		}
     }
 
     void CubeNorth(int x, int y, int z, byte block)
