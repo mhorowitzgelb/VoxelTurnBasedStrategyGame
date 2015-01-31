@@ -15,10 +15,12 @@ public class World : MonoBehaviour
     public GameObject chunk;
     public Chunk[,,] chunks;
     public int chunkSize = 16;
+	public int viewingHeight;
 
     // Use this for initialization
     private void Start()
     {
+		viewingHeight = worldY -1;
         data = new byte[worldX, worldY, worldZ];
 		characters = new byte[worldX, worldZ];
 		heightMap = new int[worldX, worldZ];

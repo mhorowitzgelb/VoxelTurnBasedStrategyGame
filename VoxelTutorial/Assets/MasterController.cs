@@ -4,6 +4,7 @@ using System.Collections;
 public class MasterController : MonoBehaviour {
 	public World world;
 	public ModifyTerrain modifyTerrain;
+	private bool takingTurn = false;
 
 	void Start(){
 		world = GetComponent<World> ();
@@ -21,10 +22,11 @@ public class MasterController : MonoBehaviour {
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit;
 		if(Physics.Raycast(ray, out hit)){
-			if(hit.collider.tag.Equals ("Character")){
+			if(hit.collider.tag.Equals ("Character") && !takingTurn){
 				TryTakeTurn(hit.collider.gameObject);
 			}
 			else{
+				Debug.Log ("Adding player");
 				modifyTerrain.AddPlayerCursor();
 			}
 

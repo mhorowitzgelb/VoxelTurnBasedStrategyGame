@@ -228,7 +228,7 @@ public class Chunk : MonoBehaviour
     {
         for (int x = 0; x < chunkSize; x++)
         {
-            for (int y = 0; y < chunkSize; y++)
+			for (int y = 0; y < chunkSize && chunkY + y < world.viewingHeight + 1; y++)
             {
                 for (int z = 0; z < chunkSize; z++)
                 {
@@ -237,7 +237,7 @@ public class Chunk : MonoBehaviour
                     {
                         //If the block is solid
 
-                        if (Block(x, y + 1, z) == 0)
+                        if (Block(x, y + 1, z) == 0 || chunkY + y == world.viewingHeight)
                         {
                             //Block above is air
                             CubeTop(x, y, z, Block(x, y, z));

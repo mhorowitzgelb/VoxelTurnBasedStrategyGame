@@ -8,21 +8,61 @@ public class ModifyTerrain : MonoBehaviour
     public GameObject player;
     private World world;
     private GameObject cameraGO;
+	private float timeToCheckPlayer;
+	private const float checkPlayerInterval = 0.25f;
+	public KeyCode worldUp = KeyCode.I;
+	public KeyCode worldDown = KeyCode.K;
+	public float distToload = 100;
+	public float distToUnload = 104;
+
+	void FixedUpdate(){
+		if (Time.time > timeToCheckPlayer) {
+			LoadChunks(player.transform.position,distToload,distToUnload);
+			timeToCheckPlayer  = Time.time + checkPlayerInterval;
+		}
+	}
 
 
 	// Use this for initialization
 	void Start ()
 	{
 	    world = gameObject.GetComponent<World>();
-	    cameraGO = GameObject.FindGameObjectWithTag("MainCamera");
+		cameraGO = GameObject.FindGameObjectWithTag ("MainCamera");
+		timeToCheckPlayer = Time.time + checkPlayerInterval;
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        LoadChunks(player.transform.position,32,34);
-
+		if(Input.GetKeyDown(worldUp)){
+			if(world.viewingHeight < world.worldY - 1){
+				world.viewingHeight ++;
+				Debug.Log("Current viewing height :" +world.viewingHeight);
+				int chunkViewingHeight = world.viewingHeight / world.chunkSize;
+				UpdateChunksAtViewHeight(chunkViewingHeight);
+			}
+		}
+		else if(Input.GetKeyDown (worldDown)){
+			if(world.viewingHeight > 0 ){
+				world.viewingHeight --;
+				Debug.Log("Current viewing height :" +world.viewingHeight);
+				int chunkViewingHeight = world.viewingHeight / world.chunkSize;
+				UpdateChunksAtViewHeight(chunkViewingHeight);
+				//Check if we changed chunks
+				if((world.viewingHeight  + 1) % world.chunkSize == 0){
+					UpdateChunksAtViewHeight(chunkViewingHeight +1);
+				}
+			}
+		}
 	    
+	}
+
+	void UpdateChunksAtViewHeight(int y){
+		for(int x = 0; x < world.worldX / world.chunkSize; x ++){ 
+			for(int z = 0; z < world.worldZ / world.chunkSize; z ++){
+				world.chunks[x, y, z].update = true;
+			}
+		}
 	}
 
     public void ReplaceBlockCenter(float range, byte block)
