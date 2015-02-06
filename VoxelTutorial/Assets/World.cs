@@ -7,7 +7,7 @@ public class World : MonoBehaviour
 	public GameObject grunt;
     public byte[,,] data;
 	public Dictionary<Vector3, GameObject> pieces;
-	public Dictionary<Vector3,bool> selectedTiles;
+	public Dictionary<Vector3,int> selectedTiles;
     public int worldX = 16;
     public int worldY = 16;
     public int worldZ = 16;
@@ -22,7 +22,7 @@ public class World : MonoBehaviour
 		viewingHeight = worldY -1;
         data = new byte[worldX, worldY, worldZ];
 		pieces = new Dictionary<Vector3,GameObject >();
-		selectedTiles = new Dictionary<Vector3,bool>();
+		selectedTiles = new Dictionary<Vector3,int>();
         for (int x = 0; x < worldX; x++)
         {
             for (int z = 0; z < worldZ; z++)
