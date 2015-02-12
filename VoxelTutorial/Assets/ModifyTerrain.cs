@@ -7,13 +7,14 @@ public class ModifyTerrain : MonoBehaviour
 
     public GameObject player;
     private World world;
-    private GameObject cameraGO;
+	public GameObject cameraHolder;
+    public  GameObject cameraGO;
 	private float timeToCheckPlayer;
 	private const float checkPlayerInterval = 0.25f;
 	public KeyCode worldUp = KeyCode.I;
 	public KeyCode worldDown = KeyCode.K;
-	public float distToload = 100;
-	public float distToUnload = 104;
+	public float distToload = 20;
+	public float distToUnload = 24;
 
 	void FixedUpdate(){
 		if (Time.time > timeToCheckPlayer) {
@@ -27,8 +28,8 @@ public class ModifyTerrain : MonoBehaviour
 	void Start ()
 	{
 	    world = gameObject.GetComponent<World>();
-		cameraGO = GameObject.FindGameObjectWithTag ("MainCamera");
 		timeToCheckPlayer = Time.time + checkPlayerInterval;
+		cameraHolder.transform.position = new Vector3 (cameraHolder.transform.position.x, world.viewingHeight + 10, cameraHolder.transform.position.z);
 
 	}
 	
@@ -36,6 +37,7 @@ public class ModifyTerrain : MonoBehaviour
 	void Update () {
 		if(Input.GetKeyDown(worldUp)){
 			if(world.viewingHeight < world.worldY - 1){
+				cameraHolder.transform.position += Vector3.up;
 				world.viewingHeight ++;
 				Debug.Log("Current viewing height :" +world.viewingHeight);
 				int chunkViewingHeight = world.viewingHeight / world.chunkSize;
@@ -44,6 +46,7 @@ public class ModifyTerrain : MonoBehaviour
 		}
 		else if(Input.GetKeyDown (worldDown)){
 			if(world.viewingHeight > 0 ){
+				cameraHolder.transform.position -= Vector3.up;
 				world.viewingHeight --;
 				Debug.Log("Current viewing height :" +world.viewingHeight);
 				int chunkViewingHeight = world.viewingHeight / world.chunkSize;
