@@ -72,7 +72,7 @@ public class World : MonoBehaviour
         }
     }
 
-    private int PerlinNoise(int x, int y, int z, float scale, float height, float power)
+    public static int PerlinNoise(int x, int y, int z, float scale, float height, float power)
     {
         float rValue;
         rValue = Noise.Noise.GetNoise(((double) x)/scale, ((double) y)/scale, ((double) z)/scale);

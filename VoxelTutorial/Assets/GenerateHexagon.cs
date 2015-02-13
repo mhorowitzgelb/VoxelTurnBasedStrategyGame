@@ -10,15 +10,15 @@ public class GenerateHexagon : MonoBehaviour {
     List<int> triangles;
     List<Vector2> uvs;
     int vertexOffset = 0;
-    private const int WorldDiameter = 7;
+    private const int WorldDiameter = 27;
     float Root3 = Mathf.Sqrt(3);
     byte[][] data;
     // Use this for initialization
 	void Start () {
-        data = new byte[2*(WorldDiameter/2) + 1][];
+        data = new byte[WorldDiameter][];
         for (int i = 0; i < WorldDiameter / 2; i++)
         {
-            data[i] = new byte[WorldDiameter / 2 + i];    
+            data[i] = new byte[WorldDiameter / 2 + i+1];    
         }
         for (int i = WorldDiameter / 2; i < WorldDiameter; i ++ )
         {
@@ -30,17 +30,49 @@ public class GenerateHexagon : MonoBehaviour {
         triangles = new List<int>();
         uvs = new List<Vector2>();
 
-        for (int q = -WorldDiameter / 2; q <= WorldDiameter/2; q++)
+		for (int q = -WorldDiameter / 2; q <= 0 ; q++)
         {
-            for (int r = -(WorldDiameter/2 - Mathf.Abs(q)); r <= (WorldDiameter/2 - Mathf.Abs(q)); r++)
+            for (int r = -(WorldDiameter/2 - Mathf.Abs(q)); r <= (WorldDiameter/2); r++)
             {
                 Vector3 position = Vector3.zero;
-                position -= r * new Vector3(0, 0, Root3);
-                position -= q * new Vector3(1.5f, 0, Root3 / 2);
+                position += r * new Vector3(0, 0, -Root3);
+                position += q * new Vector3(1.5f, 0, -Root3 / 2);
+				int height = World.PerlinNoise(q,300,r,20,4,0);
+				position += new Vector3(0,height,0);
+				for(float i = 0; i <= height; i +=0.5f){
+					Vector3 sidePos = position - new Vector3(0,i,0);
+					HexSideBottomLeft(sidePos,0);
+					HexSideBottomRIght(sidePos,0);
+					HexSideBottom(sidePos,0);
+					HexSideTop(sidePos,0);
+					HexSideTopLeft(sidePos,0);
+					HexSideTopRight(sidePos,0);
+				}
                 HexTop(position, 1);
                 SetBlock(q, r, 1);
             }
         }
+
+		for (int q = 1; q <= WorldDiameter/2; q ++) {
+			for(int r = -WorldDiameter/ 2; r <= WorldDiameter / 2 - q; r++){
+				Vector3 position = Vector3.zero;
+				position += r * new Vector3(0, 0, -Root3);
+				position += q * new Vector3(1.5f, 0, -Root3 / 2);
+				int height = World.PerlinNoise(q,300,r,20,4,0);
+				position += new Vector3(0,height,0);
+				for(float i = 0; i <= height; i +=0.5f){
+					Vector3 sidePos = position - new Vector3(0,i,0);
+					HexSideBottomLeft(sidePos,0);
+					HexSideBottomRIght(sidePos,0);
+					HexSideBottom(sidePos,0);
+					HexSideTop(sidePos,0);
+					HexSideTopLeft(sidePos,0);
+					HexSideTopRight(sidePos,0);
+				}
+				HexTop(position, 1);
+				SetBlock(q, r, 1);
+			}
+		}
         /*
         Vector3 position = new Vector3(1, 1, 1);
         HexTop(position, 0);
@@ -55,6 +87,8 @@ public class GenerateHexagon : MonoBehaviour {
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.uv = uvs.ToArray();
+		mesh.Optimize ();
+		mesh.RecalculateNormals ();
 	}
 
     byte GetBlock(int q, int r)
@@ -65,7 +99,7 @@ public class GenerateHexagon : MonoBehaviour {
 
     void SetBlock(int q, int r, byte b)
     {
-        //data[q + WorldDiameter / 2][r + WorldDiameter / 2 + Mathf.Min(0, q)] = b;
+        data[q + WorldDiameter / 2][r + WorldDiameter / 2 + Mathf.Min(0, q)] = b;
     }
 
     void HexTop(Vector3 topLeft, byte block){
