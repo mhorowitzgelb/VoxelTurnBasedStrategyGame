@@ -104,12 +104,12 @@ public class GenerateHexagon : MonoBehaviour {
 			return -1;
     }
 
-    public void SetBlock(int q, int r, byte b)
+    void SetBlock(int q, int r, byte b)
     {
 		data [q / chunkSize] [r / chunkSize] [q % chunkSize] [r % chunkSize] = b;    
     }
 
-	public bool inWorld(int q, int r){
+	bool inWorld(int q, int r){
 		if (Mathf.Abs (q) > WorldRadius || Mathf.Abs (r) > WorldRadius)
 						return false;
 		if (q * r >= 0 && Mathf.Abs (q + r) > WorldRadius)
@@ -117,175 +117,7 @@ public class GenerateHexagon : MonoBehaviour {
 		return true;
 	}
 
-    void HexTop(Vector3 topLeft, byte block){
-       
-        vertices.Add(topLeft+ new Vector3(0, 0, 0));
-        vertices.Add(topLeft + new Vector3(1, 0, 0));
-        vertices.Add(topLeft + new Vector3(1, 0, -Root3));
-        vertices.Add(topLeft + new Vector3(0, 0, -Root3));
-        vertices.Add(topLeft + new Vector3(-0.5f, 0, -0.5f * Root3));
-        vertices.Add(topLeft + new Vector3(1.5f, 0, -0.5f * Root3));
-
-
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 2);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 4);
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 5);
-        triangles.Add(vertexOffset + 2);
-
-        uvs.Add(new Vector2(0.25f, 1));
-        uvs.Add(new Vector2(0.75f, 1));
-        uvs.Add(new Vector2(0.75f , 0));
-        uvs.Add(new Vector2(0.25f, 0));
-        uvs.Add(new Vector2(0, 0.5f));
-        uvs.Add(new Vector2(1, 0.5f));
-
-
-        vertexOffset += 6;
-    }
-
-    void HexSideTopLeft(Vector3 topLeft, byte block)
-    {
-        vertices.Add(topLeft + new Vector3(0, 0, 0));
-        vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT, 0));
-        vertices.Add(topLeft + new Vector3(-0.5f, 0, -0.5f * Root3));
-        vertices.Add(topLeft + new Vector3(-0.5f, -TILE_HEIGHT, -0.5f * Root3));
-
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 2);
-        triangles.Add(vertexOffset + 3);
-        vertexOffset += 4;
-
-        uvs.Add(new Vector2(0, 0.5f));
-        uvs.Add(new Vector2(0, 0));
-        uvs.Add(new Vector2(0.5f, 0.5f));
-        uvs.Add(new Vector2(0.5f, 0));
-    }
-
-    void HexSideTop(Vector3 topLeft, byte block)
-    {
-        vertices.Add(topLeft + new Vector3(0, 0, 0));
-        vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT, 0));
-        vertices.Add(topLeft + new Vector3(1, 0, 0));
-        vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT, 0));
-
-        
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 2);
-
-        uvs.Add(new Vector2(0, 0.5f));
-        uvs.Add(new Vector2(0, 0));
-        uvs.Add(new Vector2(0.5f, 0.5f));
-        uvs.Add(new Vector2(0.5f, 0));
-
-        vertexOffset += 4;
-
-    }
-
-    void HexSideTopRight(Vector3 topLeft, byte block)
-    {
-        vertices.Add(topLeft + new Vector3(1, 0, 0));
-        vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT, 0));
-        vertices.Add(topLeft + new Vector3(1.5f, 0, -0.5f * Root3));
-        vertices.Add(topLeft + new Vector3(1.5f, -TILE_HEIGHT, -0.5f * Root3));
-
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 2);
-        triangles.Add(vertexOffset + 0);
-
-        uvs.Add(new Vector2(0, 0.5f));
-        uvs.Add(new Vector2(0, 0));
-        uvs.Add(new Vector2(0.5f, 0.5f));
-        uvs.Add(new Vector2(0.5f, 0));
-
-        vertexOffset += 4;
-    }
-
-    void HexSideBottom(Vector3 topLeft, byte block)
-    {
-        vertices.Add(topLeft + new Vector3(0, 0, -Root3));
-        vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT, -Root3));
-        vertices.Add(topLeft + new Vector3(1, 0, -Root3));
-        vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT, -Root3));
-
-
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 2);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 0);
-
-        uvs.Add(new Vector2(0, 0.5f));
-        uvs.Add(new Vector2(0, 0));
-        uvs.Add(new Vector2(0.5f, 0.5f));
-        uvs.Add(new Vector2(0.5f, 0));
-
-
-        vertexOffset += 4;
-    }
-
-
-    void HexSideBottomLeft(Vector3 topLeft, byte block)
-    {
-        vertices.Add(topLeft + new Vector3(0, 0, -Root3));
-        vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT, -Root3));
-        vertices.Add(topLeft + new Vector3(-0.5f, 0, -0.5f * Root3));
-        vertices.Add(topLeft + new Vector3(-0.5f, -TILE_HEIGHT, -0.5f * Root3));
-
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 2);
-        triangles.Add(vertexOffset + 0);
-        vertexOffset += 4;
-
-        uvs.Add(new Vector2(0, 0.5f));
-        uvs.Add(new Vector2(0, 0));
-        uvs.Add(new Vector2(0.5f, 0.5f));
-        uvs.Add(new Vector2(0.5f, 0));
-    }
-
-    void HexSideBottomRIght(Vector3 topLeft, byte block)
-    {
-        vertices.Add(topLeft + new Vector3(1, 0, -Root3));
-        vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT, -Root3));
-        vertices.Add(topLeft + new Vector3(1.5f, 0, -0.5f * Root3));
-        vertices.Add(topLeft + new Vector3(1.5f, -TILE_HEIGHT, -0.5f * Root3));
-
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 3);
-        triangles.Add(vertexOffset + 1);
-        triangles.Add(vertexOffset + 0);
-        triangles.Add(vertexOffset + 2);
-        triangles.Add(vertexOffset + 3);
-
-        uvs.Add(new Vector2(0, 0.5f));
-        uvs.Add(new Vector2(0, 0));
-        uvs.Add(new Vector2(0.5f, 0.5f));
-        uvs.Add(new Vector2(0.5f, 0));
-
-        vertexOffset += 4;
-
-    }
+    
 	// Update is called once per frame
 	void Update () {
 	
