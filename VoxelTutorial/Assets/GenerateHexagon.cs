@@ -10,12 +10,15 @@ public class GenerateHexagon : MonoBehaviour {
     List<int> triangles;
     List<Vector2> uvs;
     int vertexOffset = 0;
-    private const int WorldDiameter = 27;
+	public  const int chunkSize = 16;
+    public  const int WorldDiameter = 27;
+	public  const int WorldRadius = WorldDiameter / 2;
     float Root3 = Mathf.Sqrt(3);
-    byte[][] data;
+    byte[][][][] data;
     // Use this for initialization
 	void Start () {
-        data = new byte[WorldDiameter][];
+        /*
+		data = new byte[WorldDiameter][];
         for (int i = 0; i < WorldDiameter / 2; i++)
         {
             data[i] = new byte[WorldDiameter / 2 + i+1];    
@@ -73,7 +76,7 @@ public class GenerateHexagon : MonoBehaviour {
 				SetBlock(q, r, 1);
 			}
 		}
-        /*
+
         Vector3 position = new Vector3(1, 1, 1);
         HexTop(position, 0);
         HexSideTopLeft(position, 0);
@@ -81,7 +84,8 @@ public class GenerateHexagon : MonoBehaviour {
         HexSideTopRight(position, 0);
         HexSideBottom(position, 0);
         HexSideBottomLeft(position, 0);
-        HexSideBottomRIght(position, 0);*/
+        HexSideBottomRIght(position, 0);
+
         Mesh mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         mesh.vertices = vertices.ToArray();
@@ -89,18 +93,29 @@ public class GenerateHexagon : MonoBehaviour {
         mesh.uv = uvs.ToArray();
 		mesh.Optimize ();
 		mesh.RecalculateNormals ();
+		*/
 	}
 
-    byte GetBlock(int q, int r)
+    public byte GetBlockHeightTop(int q, int r)
     {
-        //
-        return data[q + WorldDiameter/2][r + WorldDiameter/2 + Mathf.Min(0, q)];
+		if (inWorld(q,r)) {
+			return data[q/chunkSize][r/chunkSize][q%chunkSize][r%chunkSize];
+		} else 
+			return -1;
     }
 
-    void SetBlock(int q, int r, byte b)
+    public void SetBlock(int q, int r, byte b)
     {
-        data[q + WorldDiameter / 2][r + WorldDiameter / 2 + Mathf.Min(0, q)] = b;
+		data [q / chunkSize] [r / chunkSize] [q % chunkSize] [r % chunkSize] = b;    
     }
+
+	public bool inWorld(int q, int r){
+		if (Mathf.Abs (q) > WorldRadius || Mathf.Abs (r) > WorldRadius)
+						return false;
+		if (q * r >= 0 && Mathf.Abs (q + r) > WorldRadius)
+						return false;
+		return true;
+	}
 
     void HexTop(Vector3 topLeft, byte block){
        
