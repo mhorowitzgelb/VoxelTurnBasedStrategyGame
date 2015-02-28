@@ -15,12 +15,38 @@ public class HexChunk : MonoBehaviour {
 	private float Root3 = Mathf.Sqrt(3);
 
 	// Use this for initialization
-	void Start () {
+	public void StartBuilding () {
 		for(int q = ChunkQ * GenerateHexagon.chunkSize; q < (ChunkQ + 1)* GenerateHexagon.chunkSize; q ++){
 			for(int r = ChunkR * GenerateHexagon.chunkSize; r < (ChunkR + 1) * GenerateHexagon.chunkSize; r ++){
-				if(hexWorld.GetBlockHeight() > 0)		
+                if (hexWorld.inWorld(q,r))
+                {
+                    Vector3 position = Vector3.zero;
+                    position += r * new Vector3(0, 0, -Root3);
+                    position += q * new Vector3(1.5f, 0, -Root3 / 2);
+                    int height = World.PerlinNoise(q, 300, r, 20, 4, 0);
+                    position += new Vector3(0, height, 0);
+                    for (float i = 0; i <= height; i += 0.5f)
+                    {
+                        Vector3 sidePos = position - new Vector3(0, i, 0);
+                        HexSideBottomLeft(sidePos, 0);
+                        HexSideBottomRIght(sidePos, 0);
+                        HexSideBottom(sidePos, 0);
+                        HexSideTop(sidePos, 0);
+                        HexSideTopLeft(sidePos, 0);
+                        HexSideTopRight(sidePos, 0);
+                    }
+                    HexTop(position, 1);
+                    hexWorld.SetBlock(q, r, 1);
+                }		
 			}
 		}
+        Mesh mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.uv = uvs.ToArray();
+        mesh.Optimize();
+        mesh.RecalculateNormals();
 	}
 	
 	// Update is called once per frame

@@ -10,13 +10,30 @@ public class GenerateHexagon : MonoBehaviour {
     List<int> triangles;
     List<Vector2> uvs;
     int vertexOffset = 0;
-	public  const int chunkSize = 16;
-    public  const int WorldDiameter = 27;
+	public  const int chunkSize = 15;
+    public  const int WorldDiameter = 15*11;
 	public  const int WorldRadius = WorldDiameter / 2;
     float Root3 = Mathf.Sqrt(3);
-    byte[][][][] data;
+    byte[,,,] data;
+    public GameObject ChunkPrefab;
     // Use this for initialization
 	void Start () {
+
+        data = new byte[WorldDiameter/chunkSize,WorldDiameter/chunkSize,chunkSize,chunkSize];
+
+        for (int chunkQ = -WorldRadius / chunkSize -1; chunkQ < WorldRadius / chunkSize + 1 ; chunkQ++)
+        {
+            for (int chunkR = -WorldRadius / chunkSize - 1; chunkR < WorldRadius / chunkSize + 1; chunkR++)
+            {
+                GameObject chunk = Instantiate(ChunkPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0)) as GameObject;
+                HexChunk hexChunk = chunk.GetComponent<HexChunk>();
+                hexChunk.ChunkQ = chunkQ;
+                hexChunk.ChunkR = chunkR;
+                hexChunk.hexWorld = this;
+                hexChunk.StartBuilding();
+            }    
+        }
+
         /*
 		data = new byte[WorldDiameter][];
         for (int i = 0; i < WorldDiameter / 2; i++)
@@ -98,18 +115,18 @@ public class GenerateHexagon : MonoBehaviour {
 
     public byte GetBlockHeightTop(int q, int r)
     {
+        
 		if (inWorld(q,r)) {
-			return data[q/chunkSize][r/chunkSize][q%chunkSize][r%chunkSize];
+			return data[(q+ WorldRadius)/chunkSize,(r+ WorldRadius)/chunkSize,(q+ WorldRadius)%chunkSize,(r+WorldRadius)%chunkSize];
 		} else 
-			return -1;
+			return 0;
     }
 
-    void SetBlock(int q, int r, byte b)
+    public void SetBlock(int q, int r, byte b)
     {
-		data [q / chunkSize] [r / chunkSize] [q % chunkSize] [r % chunkSize] = b;    
+        data[(q + WorldRadius) / chunkSize,(r + WorldRadius) / chunkSize,(q + WorldRadius) % chunkSize,(r + WorldRadius) % chunkSize] = b;    
     }
-
-	bool inWorld(int q, int r){
+    public bool inWorld(int q, int r){
 		if (Mathf.Abs (q) > WorldRadius || Mathf.Abs (r) > WorldRadius)
 						return false;
 		if (q * r >= 0 && Mathf.Abs (q + r) > WorldRadius)
