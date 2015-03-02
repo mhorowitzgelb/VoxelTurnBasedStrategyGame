@@ -11,28 +11,47 @@ public class GenerateHexagon : MonoBehaviour {
     List<Vector2> uvs;
     int vertexOffset = 0;
 	public  const int chunkSize = 15;
-    public  const int WorldDiameter = 15*11;
+    public  const int WorldDiameter = 15*43;
 	public  const int WorldRadius = WorldDiameter / 2;
     float Root3 = Mathf.Sqrt(3);
     byte[,,,] data;
     public GameObject ChunkPrefab;
+    public HexChunk[,] chunks;
+    public GameObject player;
+
     // Use this for initialization
 	void Start () {
 
         data = new byte[WorldDiameter/chunkSize,WorldDiameter/chunkSize,chunkSize,chunkSize];
+        chunks = new HexChunk[WorldDiameter / chunkSize, WorldDiameter / chunkSize];
 
-        for (int chunkQ = -WorldRadius / chunkSize -1; chunkQ < WorldRadius / chunkSize + 1 ; chunkQ++)
+        for (int q = -WorldRadius; q <= WorldRadius; q++)
         {
-            for (int chunkR = -WorldRadius / chunkSize - 1; chunkR < WorldRadius / chunkSize + 1; chunkR++)
+            for (int r = -WorldRadius; r <= WorldRadius; r++)
             {
-                GameObject chunk = Instantiate(ChunkPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0)) as GameObject;
-                HexChunk hexChunk = chunk.GetComponent<HexChunk>();
-                hexChunk.ChunkQ = chunkQ;
-                hexChunk.ChunkR = chunkR;
-                hexChunk.hexWorld = this;
-                hexChunk.StartBuilding();
-            }    
+                if (inWorld(q, r))
+                {
+                   SetBlock(q,r,(byte) Mathf.Clamp(World.PerlinNoise(q, r, 0,20f, 10f, 2f), 0, 50));
+                }
+            }
         }
+
+
+            for (int chunkQ = -WorldRadius / chunkSize; chunkQ < WorldRadius / chunkSize; chunkQ++)
+            {
+                for (int chunkR = -WorldRadius / chunkSize ; chunkR < WorldRadius / chunkSize; chunkR++)
+                {
+                    GameObject chunk = Instantiate(ChunkPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0)) as GameObject;
+                    HexChunk hexChunk = chunk.GetComponent<HexChunk>();
+                    hexChunk.ChunkQ = chunkQ;
+                    hexChunk.ChunkR = chunkR;
+                    hexChunk.hexWorld = this;
+                    Vector2 position = Vector2.zero;
+                    position += (chunkR * chunkSize + (chunkSize *0.5f)) * new Vector2(0, -Root3);
+                    position += (chunkQ * chunkSize + (chunkSize * 0.5f)) * new Vector2(1.5f, -Root3 / 2);
+                    hexChunk.mapPosition = position;
+                }
+            }
 
         /*
 		data = new byte[WorldDiameter][];
@@ -127,10 +146,12 @@ public class GenerateHexagon : MonoBehaviour {
         data[(q + WorldRadius) / chunkSize,(r + WorldRadius) / chunkSize,(q + WorldRadius) % chunkSize,(r + WorldRadius) % chunkSize] = b;    
     }
     public bool inWorld(int q, int r){
-		if (Mathf.Abs (q) > WorldRadius || Mathf.Abs (r) > WorldRadius)
+		
+        if (Mathf.Abs (q) > WorldRadius || Mathf.Abs (r) > WorldRadius)
 						return false;
 		if (q * r >= 0 && Mathf.Abs (q + r) > WorldRadius)
 						return false;
+         
 		return true;
 	}
 

@@ -13,30 +13,72 @@ public class HexChunk : MonoBehaviour {
 	private int vertexOffset = 0;
 	private float TILE_HEIGHT = 0.5f;
 	private float Root3 = Mathf.Sqrt(3);
+    private bool meshOn = false;
+    public Vector2 mapPosition;
+
+
+    float time = 0;
+    public void LateUpdate(){
+        time += Time.deltaTime;
+        if(time > 1){
+            time = 0;
+            if (meshOn && Vector2.Distance(mapPosition, new Vector2(hexWorld.player.transform.position.x, hexWorld.player.transform.position.z)) > 100)
+            {
+                GetComponent<MeshFilter>().mesh.Clear();
+                meshOn = false;
+            }
+            else if(!meshOn && Vector2.Distance(mapPosition, new Vector2(hexWorld.player.transform.position.x, hexWorld.player.transform.position.z)) < 100){
+                StartBuilding();
+                meshOn = true;
+            }
+                
+        }
+    }
+        
+
+
+
+
+
 
 	// Use this for initialization
 	public void StartBuilding () {
 		for(int q = ChunkQ * GenerateHexagon.chunkSize; q < (ChunkQ + 1)* GenerateHexagon.chunkSize; q ++){
 			for(int r = ChunkR * GenerateHexagon.chunkSize; r < (ChunkR + 1) * GenerateHexagon.chunkSize; r ++){
-                if (hexWorld.inWorld(q,r))
+                if (hexWorld.inWorld(q, r))
                 {
                     Vector3 position = Vector3.zero;
                     position += r * new Vector3(0, 0, -Root3);
                     position += q * new Vector3(1.5f, 0, -Root3 / 2);
-                    int height = World.PerlinNoise(q, 300, r, 20, 4, 0);
-                    position += new Vector3(0, height, 0);
-                    for (float i = 0; i <= height; i += 0.5f)
+                    int height = hexWorld.GetBlockHeightTop(q, r);
+                    position += new Vector3(0, height/ 2.0f, 0);
+                    byte bottomLeft = hexWorld.GetBlockHeightTop(-1 + q, 1 + r);
+                    byte bottom = hexWorld.GetBlockHeightTop(q, 1 + r);
+                    byte bottomRight = hexWorld.GetBlockHeightTop(1 + q, r);
+                    byte topLeft = hexWorld.GetBlockHeightTop(q -1, r);
+                    byte top = hexWorld.GetBlockHeightTop(q, -1 + r); 
+                    byte topRight = hexWorld.GetBlockHeightTop(q + 1, r- 1);
+                    
+                    for (float i = 0; i <= height; i ++)
                     {
-                        Vector3 sidePos = position - new Vector3(0, i, 0);
-                        HexSideBottomLeft(sidePos, 0);
-                        HexSideBottomRIght(sidePos, 0);
-                        HexSideBottom(sidePos, 0);
-                        HexSideTop(sidePos, 0);
-                        HexSideTopLeft(sidePos, 0);
-                        HexSideTopRight(sidePos, 0);
+                        Vector3 sidePos = position - new Vector3(0, i / 2.0f, 0);
+                        int sideHeight = height - (int)i;
+                        if(bottomLeft < sideHeight)
+                            HexSideBottomLeft(sidePos, 0);
+                        if(bottomRight < sideHeight)
+                            HexSideBottomRIght(sidePos, 0);
+                        if(bottom < sideHeight)
+                            HexSideBottom(sidePos, 0);
+                        if(top < sideHeight)
+                            HexSideTop(sidePos, 0);
+                        if(topLeft < sideHeight)
+                            HexSideTopLeft(sidePos, 0);
+                        if(topRight < sideHeight)
+                            HexSideTopRight(sidePos, 0);
                     }
                     HexTop(position, 1);
-                    hexWorld.SetBlock(q, r, 1);
+                
+                    
                 }		
 			}
 		}

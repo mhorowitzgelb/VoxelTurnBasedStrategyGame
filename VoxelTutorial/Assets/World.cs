@@ -15,6 +15,7 @@ public class World : MonoBehaviour
     public Chunk[,,] chunks;
     public int chunkSize = 16;
 	public int viewingHeight;
+    public GameObject player;
 
     // Use this for initialization
     private void Start()
