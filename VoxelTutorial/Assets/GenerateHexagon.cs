@@ -11,13 +11,15 @@ public class GenerateHexagon : MonoBehaviour {
     List<Vector2> uvs;
     int vertexOffset = 0;
 	public  const int chunkSize = 15;
-    public  const int WorldDiameter = 15*11;
+    public  const int WorldDiameter = 15*43;
 	public  const int WorldRadius = WorldDiameter / 2;
     float Root3 = Mathf.Sqrt(3);
+    public HexChunk[,] chunks;
     byte[,,,] data;
     public GameObject ChunkPrefab;
-    public Dictionary<Vector2, HexChunk> chunkMap;
     public GameObject player;
+    public const int distToUnload = 180;
+    public const int distToLoad = 175;
 
 
 
@@ -26,7 +28,7 @@ public class GenerateHexagon : MonoBehaviour {
 	void Start () {
 
         data = new byte[WorldDiameter/chunkSize,WorldDiameter/chunkSize,chunkSize,chunkSize];
-        chunkMap = new Dictionary<Vector2, HexChunk>();
+        chunks = new HexChunk[WorldDiameter / chunkSize, WorldDiameter / chunkSize];
 
         for (int q = -WorldRadius; q <= WorldRadius; q++)
         {
@@ -39,7 +41,7 @@ public class GenerateHexagon : MonoBehaviour {
             }
         }
 
-
+        /*
         for (int chunkQ = -WorldRadius / chunkSize; chunkQ < WorldRadius / chunkSize; chunkQ++)
         {
             for (int chunkR = -WorldRadius / chunkSize ; chunkR < WorldRadius / chunkSize; chunkR++)
@@ -54,7 +56,7 @@ public class GenerateHexagon : MonoBehaviour {
                 position += (chunkQ * chunkSize + (chunkSize * 0.5f)) * new Vector2(1.5f, -Root3 / 2);
                 hexChunk.mapPosition = position;
             }
-        }
+        }*/
 
 	}
 
@@ -81,9 +83,53 @@ public class GenerateHexagon : MonoBehaviour {
 		return true;
 	}
 
-    
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    float timer = 0f;
+
+
+    void LateUpdate()
+    {
+        timer += Time.deltaTime;
+        if (timer > 1)
+        {
+            timer = 0;
+            for (int chunkQ = -WorldRadius / chunkSize; chunkQ <= WorldRadius / chunkSize; chunkQ++)
+            {
+                for (int chunkR = -WorldRadius / chunkSize; chunkR <= WorldRadius / chunkSize; chunkR++)
+                {
+                    Vector2 hexPosition = new Vector2((chunkQ + 0.5f) *chunkSize, (chunkR + 0.5f )* chunkSize);
+                    Vector2 normalPosition = HexToNormal(hexPosition);
+                    int chunkQIndex = chunkQ + WorldRadius / chunkSize;
+                    int chunkRIndex = chunkR + WorldRadius  / chunkSize;
+                    HexChunk chunk = chunks[chunkQIndex, chunkRIndex];
+                    Vector2 playerPosition = new Vector2(player.transform.position.x, player.transform.position.z);
+                    if (chunk != null && Vector2.Distance(normalPosition, playerPosition) > distToUnload) 
+                    {
+                        Destroy(chunk.gameObject);
+                        chunks[chunkQIndex, chunkRIndex] = null;
+                    }
+                    else if (chunk == null && Vector2.Distance(normalPosition, playerPosition) < distToLoad)
+                    {
+                        GameObject newObject = Instantiate(ChunkPrefab) as GameObject;
+                        chunk = newObject.GetComponent<HexChunk>();
+                        chunk.ChunkQ = chunkQ;
+                        chunk.ChunkR = chunkR;
+                        chunk.hexWorld = this;
+                        chunk.mapPosition = normalPosition;
+                        chunks[chunkQIndex, chunkRIndex] = chunk;
+                        chunk.StartBuilding();
+                    }
+                }
+            }
+        }
+    }
+
+    public Vector2 HexToNormal(Vector2 vector)
+    {
+        Vector2 newVector = Vector2.zero;
+        newVector += vector.y * new Vector2(0, -Root3);
+        newVector += vector.x * new Vector2(1.5f, -Root3 / 2);
+        return newVector;
+    }
+
+   
 }

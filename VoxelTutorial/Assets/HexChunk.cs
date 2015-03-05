@@ -19,6 +19,8 @@ public class HexChunk : MonoBehaviour {
 
     float time = 0;
     public void LateUpdate(){
+       
+        /*
         time += Time.deltaTime;
         if(time > 1){
             time = 0;
@@ -33,6 +35,7 @@ public class HexChunk : MonoBehaviour {
             }
                 
         }
+        */
     }
         
 
