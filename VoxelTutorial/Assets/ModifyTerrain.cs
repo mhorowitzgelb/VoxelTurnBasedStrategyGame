@@ -219,6 +219,7 @@ public class ModifyTerrain : MonoBehaviour
     }
 
     public void LoadChunks(Vector3 playerPos, float distToLoad, float distToUnload)
+
     {
         for (int x = 0; x < world.chunks.GetLength(0); x++)
         {
