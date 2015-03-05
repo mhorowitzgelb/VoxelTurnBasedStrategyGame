@@ -59,23 +59,13 @@ public class HexChunk : MonoBehaviour {
                     byte top = hexWorld.GetBlockHeightTop(q, -1 + r); 
                     byte topRight = hexWorld.GetBlockHeightTop(q + 1, r- 1);
                     
-                    for (float i = 0; i <= height; i ++)
-                    {
-                        Vector3 sidePos = position - new Vector3(0, i / 2.0f, 0);
-                        int sideHeight = height - (int)i;
-                        if(bottomLeft < sideHeight)
-                            HexSideBottomLeft(sidePos, 0);
-                        if(bottomRight < sideHeight)
-                            HexSideBottomRIght(sidePos, 0);
-                        if(bottom < sideHeight)
-                            HexSideBottom(sidePos, 0);
-                        if(top < sideHeight)
-                            HexSideTop(sidePos, 0);
-                        if(topLeft < sideHeight)
-                            HexSideTopLeft(sidePos, 0);
-                        if(topRight < sideHeight)
-                            HexSideTopRight(sidePos, 0);
-                    }
+                    
+                    HexSideBottomLeft(position, height - bottomLeft, 0);
+                    HexSideBottomRIght(position, height - bottomRight, 0);
+                    HexSideBottom(position, height - bottom, 0);
+                    HexSideTop(position,height - top, 0);
+                    HexSideTopLeft(position,height - topLeft, 0);
+                    HexSideTopRight(position,height - topRight ,0);
                     HexTop(position, 1);
                 
                     
@@ -130,12 +120,14 @@ public class HexChunk : MonoBehaviour {
 					vertexOffset += 6;
 				}
 				
-				void HexSideTopLeft(Vector3 topLeft, byte block)
+				void HexSideTopLeft(Vector3 topLeft, int height, byte block)
 				{
+                    if (height <= 0)
+                        return;
 					vertices.Add(topLeft + new Vector3(0, 0, 0));
-					vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT, 0));
+					vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT * height, 0));
 					vertices.Add(topLeft + new Vector3(-0.5f, 0, -0.5f * Root3));
-					vertices.Add(topLeft + new Vector3(-0.5f, -TILE_HEIGHT, -0.5f * Root3));
+					vertices.Add(topLeft + new Vector3(-0.5f, -TILE_HEIGHT * height, -0.5f * Root3));
 					
 					triangles.Add(vertexOffset + 0);
 					triangles.Add(vertexOffset + 3);
@@ -151,12 +143,14 @@ public class HexChunk : MonoBehaviour {
 					uvs.Add(new Vector2(0.5f, 0));
 				}
 				
-				void HexSideTop(Vector3 topLeft, byte block)
+				void HexSideTop(Vector3 topLeft, int height,  byte block)
 				{
+                    if (height <= 0)
+                        return;
 					vertices.Add(topLeft + new Vector3(0, 0, 0));
-					vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT, 0));
+					vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT * height, 0));
 					vertices.Add(topLeft + new Vector3(1, 0, 0));
-					vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT, 0));
+					vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT * height, 0));
 					
 					
 					triangles.Add(vertexOffset + 0);
@@ -175,12 +169,14 @@ public class HexChunk : MonoBehaviour {
 					
 				}
 				
-				void HexSideTopRight(Vector3 topLeft, byte block)
+				void HexSideTopRight(Vector3 topLeft, int height, byte block)
 				{
+                    if (height <= 0)
+                        return;
 					vertices.Add(topLeft + new Vector3(1, 0, 0));
-					vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT, 0));
+					vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT * height, 0));
 					vertices.Add(topLeft + new Vector3(1.5f, 0, -0.5f * Root3));
-					vertices.Add(topLeft + new Vector3(1.5f, -TILE_HEIGHT, -0.5f * Root3));
+					vertices.Add(topLeft + new Vector3(1.5f, -TILE_HEIGHT * height, -0.5f * Root3));
 					
 					triangles.Add(vertexOffset + 1);
 					triangles.Add(vertexOffset + 3);
@@ -197,12 +193,14 @@ public class HexChunk : MonoBehaviour {
 					vertexOffset += 4;
 				}
 				
-				void HexSideBottom(Vector3 topLeft, byte block)
+				void HexSideBottom(Vector3 topLeft, int height, byte block)
 				{
+                    if (height <= 0)
+                        return;
 					vertices.Add(topLeft + new Vector3(0, 0, -Root3));
-					vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT, -Root3));
+					vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT * height, -Root3));
 					vertices.Add(topLeft + new Vector3(1, 0, -Root3));
-					vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT, -Root3));
+					vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT * height, -Root3));
 					
 					
 					triangles.Add(vertexOffset + 3);
@@ -222,12 +220,14 @@ public class HexChunk : MonoBehaviour {
 				}
 				
 				
-				void HexSideBottomLeft(Vector3 topLeft, byte block)
+				void HexSideBottomLeft(Vector3 topLeft, int height, byte block)
 				{
+                    if (height <= 0)
+                        return;
 					vertices.Add(topLeft + new Vector3(0, 0, -Root3));
-					vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT, -Root3));
+					vertices.Add(topLeft + new Vector3(0, -TILE_HEIGHT * height, -Root3));
 					vertices.Add(topLeft + new Vector3(-0.5f, 0, -0.5f * Root3));
-					vertices.Add(topLeft + new Vector3(-0.5f, -TILE_HEIGHT, -0.5f * Root3));
+					vertices.Add(topLeft + new Vector3(-0.5f, -TILE_HEIGHT * height, -0.5f * Root3));
 					
 					triangles.Add(vertexOffset + 1);
 					triangles.Add(vertexOffset + 3);
@@ -243,12 +243,14 @@ public class HexChunk : MonoBehaviour {
 					uvs.Add(new Vector2(0.5f, 0));
 				}
 				
-				void HexSideBottomRIght(Vector3 topLeft, byte block)
+				void HexSideBottomRIght(Vector3 topLeft, int height, byte block)
 				{
+                    if (height <= 0)
+                        return;
 					vertices.Add(topLeft + new Vector3(1, 0, -Root3));
-					vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT, -Root3));
+					vertices.Add(topLeft + new Vector3(1, -TILE_HEIGHT * height, -Root3));
 					vertices.Add(topLeft + new Vector3(1.5f, 0, -0.5f * Root3));
-					vertices.Add(topLeft + new Vector3(1.5f, -TILE_HEIGHT, -0.5f * Root3));
+					vertices.Add(topLeft + new Vector3(1.5f, -TILE_HEIGHT * height, -0.5f * Root3));
 					
 					triangles.Add(vertexOffset + 0);
 					triangles.Add(vertexOffset + 3);

@@ -42,7 +42,7 @@ public class MasterController : MonoBehaviour {
 					GameObject pieceObject = Instantiate(basicPiece, new Vector3(actualX, y , actualZ), new Quaternion(0,0,0,0)) as GameObject;
 					Piece piece = pieceObject.GetComponent<Piece>();
 					piece.team = team;
-					pieceObject.renderer.material.color = team.color;
+					pieceObject.GetComponent<Renderer>().material.color = team.color;
 					team.pieces.Add(piece);
 				}
 			}

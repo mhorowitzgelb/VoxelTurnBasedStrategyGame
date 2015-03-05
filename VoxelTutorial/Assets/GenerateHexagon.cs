@@ -11,7 +11,7 @@ public class GenerateHexagon : MonoBehaviour {
     List<Vector2> uvs;
     int vertexOffset = 0;
 	public  const int chunkSize = 15;
-    public  const int WorldDiameter = 15*43;
+    public  const int WorldDiameter = 15*11;
 	public  const int WorldRadius = WorldDiameter / 2;
     float Root3 = Mathf.Sqrt(3);
     byte[,,,] data;
