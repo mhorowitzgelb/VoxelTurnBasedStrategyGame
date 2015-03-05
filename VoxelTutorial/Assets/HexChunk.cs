@@ -13,31 +13,18 @@ public class HexChunk : MonoBehaviour {
 	private int vertexOffset = 0;
 	private float TILE_HEIGHT = 0.5f;
 	private float Root3 = Mathf.Sqrt(3);
-    private bool meshOn = false;
     public Vector2 mapPosition;
 
 
-    float time = 0;
-    public void LateUpdate(){
-       
-        /*
-        time += Time.deltaTime;
-        if(time > 1){
-            time = 0;
-            if (meshOn && Vector2.Distance(mapPosition, new Vector2(hexWorld.player.transform.position.x, hexWorld.player.transform.position.z)) > 100)
-            {
-                GetComponent<MeshFilter>().mesh.Clear();
-                meshOn = false;
-            }
-            else if(!meshOn && Vector2.Distance(mapPosition, new Vector2(hexWorld.player.transform.position.x, hexWorld.player.transform.position.z)) < 100){
-                StartBuilding();
-                meshOn = true;
-            }
-                
-        }
-        */
+    public void Deallocate()
+    {
+        vertexOffset = 0;
+        vertices.Clear();
+        triangles.Clear();
+        uvs.Clear();
+        GetComponent<MeshFilter>().mesh.Clear();
     }
-        
+
 
 
 
@@ -75,7 +62,15 @@ public class HexChunk : MonoBehaviour {
                 }		
 			}
 		}
-        Mesh mesh = new Mesh();
+
+        MeshFilter filter = GetComponent<MeshFilter>();
+        Mesh mesh = filter.mesh;
+        if (mesh == null)
+        {
+            mesh = new Mesh();
+            filter.mesh = mesh;
+        }
+
         GetComponent<MeshFilter>().mesh = mesh;
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
@@ -86,7 +81,7 @@ public class HexChunk : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+	        
 	}
 
 				void HexTop(Vector3 topLeft, byte block){
