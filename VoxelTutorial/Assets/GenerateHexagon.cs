@@ -50,10 +50,8 @@ public class GenerateHexagon : MonoBehaviour {
         {
             for (int r = -WorldRadius; r <= WorldRadius; r++)
             {
-                if (inWorld(q, r))
-                {
-                   SetBlock(q,r,(byte) World.PerlinNoise(q, r, 0,20f, 10f, 2f));
-                }
+                    SetBlock(q,r, (byte)(World.PerlinNoise(q, r, 0,20f, 10, 1.5f ) + World.PerlinNoise(q, r, 0,10f, 5f, 0.5f ) + World.PerlinNoise(q, r, 0,5f, 2.5f, 0.5f )));
+                
             }
         }
 
@@ -140,12 +138,11 @@ public class GenerateHexagon : MonoBehaviour {
                 {
                     HexChunk chunk = freeChunks[0];
                     freeChunks.RemoveAt(0);
-                    Debug.Log(freeChunks.Capacity);
                     chunk.ChunkQ = (int) hexPosition.x;
                     chunk.ChunkR = (int) hexPosition.y;
                     chunk.mapPosition = HexToNormal(hexPosition);
                     chunks[chunk.ChunkQ + WorldRadius / chunkSize, chunk.ChunkR + WorldRadius / chunkSize] = chunk;
-                    chunk.StartBuilding();
+                    chunk.update = true;
                 }
                 //We need to instantiate a new object
                 else
@@ -157,7 +154,7 @@ public class GenerateHexagon : MonoBehaviour {
                     chunk.hexWorld = this;
                     chunk.mapPosition = HexToNormal(hexPosition);
                     chunks[chunk.ChunkQ + WorldRadius / chunkSize, chunk.ChunkR + WorldRadius /chunkSize] = chunk;
-                    chunk.StartBuilding();
+                    chunk.update = true;
                 }
             }
         }
