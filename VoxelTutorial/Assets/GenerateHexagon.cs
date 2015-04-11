@@ -38,53 +38,35 @@ public class GenerateHexagon : MonoBehaviour {
     //How close when we start loading chunks
     public const int distToLoad = 175;
 
+    //The take turn monobehaviour
+    public HexTakeTurn hexTakeTurn;
+
 
 
 
     // Use this for initialization
 	void Start () {
-
         pieces = new Dictionary<Vector2, HexPiece>();
         selectedTiles = new Dictionary<Vector2, int>();
         data = new byte[WorldDiameter/chunkSize,WorldDiameter/chunkSize,chunkSize,chunkSize];
         chunks = new HexChunk[WorldDiameter / chunkSize, WorldDiameter / chunkSize];
         freeChunks = new List<HexChunk>();
-
         for (int q = -WorldRadius; q <= WorldRadius; q++)
         {
             for (int r = -WorldRadius; r <= WorldRadius; r++)
             {
-               
                 if (inWorld(q, r))
                 {
-                    
-                   SetBlock(q,r,(byte) World.PerlinNoise(q, r, 0,20f, 500,0.5f));
+                    SetBlock(q, r, (byte)(World.PerlinNoise(q, r, 0, 20f, 10, 1.5f) + World.PerlinNoise(q, r, 0, 10f, 5f, 0.5f) + World.PerlinNoise(q, r, 0, 5f, 2.5f, 0.5f)));
                 }
             }
         }
-
-        /*
-        for (int chunkQ = -WorldRadius / chunkSize; chunkQ < WorldRadius / chunkSize; chunkQ++)
-        {
-            for (int chunkR = -WorldRadius / chunkSize ; chunkR < WorldRadius / chunkSize; chunkR++)
-            {
-                GameObject chunk = Instantiate(ChunkPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0)) as GameObject;
-                HexChunk hexChunk = chunk.GetComponent<HexChunk>();
-                hexChunk.ChunkQ = chunkQ;
-                hexChunk.ChunkR = chunkR;
-                hexChunk.hexWorld = this;
-                Vector2 position = Vector2.zero;
-                position += (chunkR * chunkSize + (chunkSize *0.5f)) * new Vector2(0, -Root3);
-                position += (chunkQ * chunkSize + (chunkSize * 0.5f)) * new Vector2(1.5f, -Root3 / 2);
-                hexChunk.mapPosition = position;
-            }
-        }*/
-
+        hexTakeTurn = GetComponent<HexTakeTurn>();
+        hexTakeTurn.SetUpTeams();
 	}
 
     public byte GetBlockHeightTop(int q, int r)
     {
-        
 		if (inWorld(q,r)) {
 			return data[(q+ WorldRadius)/chunkSize,(r+ WorldRadius)/chunkSize,(q+ WorldRadius)%chunkSize,(r+WorldRadius)%chunkSize];
 		} else 
@@ -146,7 +128,6 @@ public class GenerateHexagon : MonoBehaviour {
                 {
                     HexChunk chunk = freeChunks[0];
                     freeChunks.RemoveAt(0);
-                    Debug.Log(freeChunks.Capacity);
                     chunk.ChunkQ = (int) hexPosition.x;
                     chunk.ChunkR = (int) hexPosition.y;
                     chunk.mapPosition = HexToNormal(hexPosition);

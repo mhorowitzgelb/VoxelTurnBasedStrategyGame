@@ -1,0 +1,36 @@
+Unity Player [version: Unity 4.6.3f1_4753d8b6ef2b]
+
+HexTest.exe caused an Access Violation (0xc0000005)
+  in module HexTest.exe at 0033:3b4eba2b.
+
+Error occurred at 2015-03-02_223428.
+C:\Users\mhorowitzgelb\Documents\VoxelTurnBasedStrategyGame\VoxelTutorial\HexTest.exe, run by mhorowitzgelb.
+95% memory in use.
+8099 MB physical memory [375 MB free].
+11171 MB paging file [5 MB free].
+134217728 MB user address space [134210996 MB free].
+Read from location ffffffff caused an access violation.
+
+Context:
+RDI:    0x0020000b  RSI: 0x03f7a1bc  RAX:   0x040f2048
+RBX:    0x00000000  RCX: 0x03cf2048  RDX:   0x03f7a1cc
+RIP:    0x3b4eba2b  RBP: 0x03cf2048  SegCs: 0x00000033
+EFlags: 0x00010206  RSP: 0x010ee510  SegSs: 0x0000002b
+R8:    0x0020000b  R9: 0x3bc7e608  R10:   0x0020000b
+R11:    0x010ee648  R12: 0x03f7a1cc  R13:   0x03f7a1c4
+R14:    0x00000000  R15: 0x00000000
+
+Bytes at CS:EIP:
+49 8b 45 08 48 83 e0 fc 4a 8d 4c 30 08 48 b8 00 Module 1
+C:\Windows\SYSTEM32\xinput1_3.dll
+Image Base: 0x00400000  Image Size: 0x0001e000
+File Size:  107368      File Time:  2007-04-04_185422
+Version:
+   Company:    Microsoft Corporation
+   Product:    Microsoft® DirectX for Windows®
+   FileDesc:   Microsoft Common Controller API
+   FileVer:    9.18.944.0
+   ProdVer:    9.18.944.0
+
+
+== [end of error.log] ==
