@@ -14,6 +14,8 @@ public class HexChunk : MonoBehaviour {
 	private float TILE_HEIGHT = 0.5f;
 	private float Root3 = Mathf.Sqrt(3);
     public Vector2 mapPosition;
+    public bool update;
+    private List<GameObject> pieces = new List<GameObject>();
 
 
     public void Deallocate()
@@ -23,6 +25,11 @@ public class HexChunk : MonoBehaviour {
         triangles.Clear();
         uvs.Clear();
         GetComponent<MeshFilter>().mesh.Clear();
+        foreach (GameObject obj in pieces)
+        {
+            Destroy(obj);
+        }
+        pieces.Clear();
     }
 
 
@@ -58,6 +65,15 @@ public class HexChunk : MonoBehaviour {
                     HexSideTopRight(position,height - topRight ,0);
                     HexTop(position, 1);
                 
+                    HexPiece piece;
+                    if(hexWorld.pieces.TryGetValue(new Vector2(q,r), out piece)){
+                        GameObject obj = Instantiate(hexWorld.piecePrefab) as GameObject;
+                        obj.transform.position = new Vector3(1.5f * q, height / 2.0f + 0.5f, r * (-Root3) + q * (-Root3 / 2));
+                        HexPieceMon hexPiece = obj.GetComponent<HexPieceMon>();
+                        hexPiece.hexPiece = piece;
+                        obj.renderer.material.color = piece.team.color;
+                        pieces.Add(obj);
+                    }
                     
                 }		
 			}
@@ -81,7 +97,11 @@ public class HexChunk : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	        
+        if (update)
+        {
+            update = false;
+            StartBuilding();
+        }        
 	}
 
 				void HexTop(Vector3 topLeft, byte block){

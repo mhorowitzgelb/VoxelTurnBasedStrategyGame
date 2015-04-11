@@ -8,7 +8,7 @@ public class GenerateHexagon : MonoBehaviour {
 
     int vertexOffset = 0;
 	public  const int chunkSize = 15;
-    public  const int WorldDiameter = 15*43;
+    public  const int WorldDiameter = 15*11;
 	public  const int WorldRadius = WorldDiameter / 2;
     float Root3 = Mathf.Sqrt(3);
     //List of utilized chunks in array position based off their actual chunkPosition
@@ -16,7 +16,9 @@ public class GenerateHexagon : MonoBehaviour {
 
     //The heightmap data position by position
     byte[,,,] data;
-
+    public Dictionary<Vector2, HexPiece> pieces;
+    public GameObject piecePrefab;
+    public Dictionary<Vector2, int> selectedTiles;
     //Free chunks that can be used to draw/update the map
     //The key point of this is to prevent unity for instantiating and destroying a lot
     //of objects and eating up memory. (Although it doesn't actually eat up the memory. The amount of allocated memory is fine
@@ -42,6 +44,8 @@ public class GenerateHexagon : MonoBehaviour {
     // Use this for initialization
 	void Start () {
 
+        pieces = new Dictionary<Vector2, HexPiece>();
+        selectedTiles = new Dictionary<Vector2, int>();
         data = new byte[WorldDiameter/chunkSize,WorldDiameter/chunkSize,chunkSize,chunkSize];
         chunks = new HexChunk[WorldDiameter / chunkSize, WorldDiameter / chunkSize];
         freeChunks = new List<HexChunk>();
@@ -50,9 +54,11 @@ public class GenerateHexagon : MonoBehaviour {
         {
             for (int r = -WorldRadius; r <= WorldRadius; r++)
             {
+               
                 if (inWorld(q, r))
                 {
-                   SetBlock(q,r,(byte) World.PerlinNoise(q, r, 0,20f, 10f, 2f));
+                    
+                   SetBlock(q,r,(byte) World.PerlinNoise(q, r, 0,20f, 500,0.5f));
                 }
             }
         }
@@ -145,7 +151,7 @@ public class GenerateHexagon : MonoBehaviour {
                     chunk.ChunkR = (int) hexPosition.y;
                     chunk.mapPosition = HexToNormal(hexPosition);
                     chunks[chunk.ChunkQ + WorldRadius / chunkSize, chunk.ChunkR + WorldRadius / chunkSize] = chunk;
-                    chunk.StartBuilding();
+                    chunk.update = true;
                 }
                 //We need to instantiate a new object
                 else
@@ -157,7 +163,7 @@ public class GenerateHexagon : MonoBehaviour {
                     chunk.hexWorld = this;
                     chunk.mapPosition = HexToNormal(hexPosition);
                     chunks[chunk.ChunkQ + WorldRadius / chunkSize, chunk.ChunkR + WorldRadius /chunkSize] = chunk;
-                    chunk.StartBuilding();
+                    chunk.update = true;
                 }
             }
         }
