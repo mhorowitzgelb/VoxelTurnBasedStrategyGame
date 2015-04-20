@@ -65,7 +65,7 @@ public class HexTakeTurn : MonoBehaviour {
                 HexPieceMon piece = obj.GetComponent<HexPieceMon>();
                 if (piece.hexPiece.team.Equals(currentTeam) && !piece.hexPiece.doneTakingMove)
                 {
-                    obj.renderer.material.color = Color.green;
+                    obj.GetComponent<Renderer>().material.color = Color.green;
                     takingTurn = true;
                     TryTakeTurn(NormalToHex(new Vector2((int)obj.transform.position.x,(int)obj.transform.position.z)));
                     currentPieceTakingTurn = piece.hexPiece;

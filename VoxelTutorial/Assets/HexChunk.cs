@@ -92,7 +92,7 @@ public class HexChunk : MonoBehaviour {
                         obj.transform.position = new Vector3(1.5f * q + 0.5f, height / 2.0f + 0.5f, r * (-Root3) + q * (-Root3 / 2) - Root3 / 2);
                         HexPieceMon hexPiece = obj.GetComponent<HexPieceMon>();
                         hexPiece.hexPiece = piece;
-                        obj.renderer.material.color = piece.team.color;
+                        obj.GetComponent<Renderer>().material.color = piece.team.color;
                         pieces.Add(obj);
                     }
 
