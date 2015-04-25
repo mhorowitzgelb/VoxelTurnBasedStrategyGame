@@ -48,8 +48,8 @@ public class HexTakeTurn : MonoBehaviour {
                     }
                     HexPiece piece = new HexPiece();
                     piece.team = team;
-                    piece.position = new Vector2(q, r);
-                    hexWorld.pieces.Add(new Vector2(q + team.currentCenterQ - squareLength / 2, r + team.currentCenterR - squareLength / 2), piece);
+                    piece.position = new Vector2(q + team.currentCenterQ - squareLength / 2, r + team.currentCenterR - squareLength / 2);
+                    hexWorld.pieces.Add( piece.position, piece);
                 }
             }
         }
@@ -84,7 +84,13 @@ public class HexTakeTurn : MonoBehaviour {
                     Debug.Log("Try take turn");
                     obj.GetComponent<Renderer>().material.color = Color.green;
                     takingTurn = true;
-                    TryTakeTurn(NormalToHex(new Vector2((int)obj.transform.position.x,(int)obj.transform.position.z)));
+                    Vector2 hexPosition = obj.GetComponent<HexPieceMon>().hexPiece.position;
+                    Debug.Log("The actual position of player: " + hexPosition);
+                    Vector2 badPosition = NormalToHex(new Vector2(hit.point.x, hit.point.z));
+                    badPosition.x = Mathf.RoundToInt(badPosition.x);
+                    badPosition.y = Mathf.RoundToInt(badPosition.y);
+                    Debug.Log("What code so far thinks the position of the hit is: " + badPosition);
+                    TryTakeTurn(hexPosition);
                     currentPieceTakingTurn = piece.hexPiece;
                 }
             }
@@ -98,6 +104,8 @@ public class HexTakeTurn : MonoBehaviour {
                     Debug.Log("World hit");
                     Vector3 pos = hit.point;
                     Vector2 hexPos = NormalToHex(new Vector2(pos.x, pos.z));
+                    hexPos.x = Mathf.RoundToInt(hexPos.x);
+                    hexPos.y = Mathf.RoundToInt(hexPos.y);
                     hexPos = new Vector2((int)hexPos.x, (int)hexPos.y);
                     if (hexWorld.selectedTiles.ContainsKey(hexPos))
                     {
