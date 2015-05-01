@@ -86,9 +86,7 @@ public class HexTakeTurn : MonoBehaviour {
                     takingTurn = true;
                     Vector2 hexPosition = obj.GetComponent<HexPieceMon>().hexPiece.position;
                     Debug.Log("The actual position of player: " + hexPosition);
-                    Vector2 badPosition = NormalToHex(new Vector2(hit.point.x, hit.point.z));
-                    badPosition.x = Mathf.RoundToInt(badPosition.x);
-                    badPosition.y = Mathf.RoundToInt(badPosition.y);
+                    Vector2 badPosition = RoundHex(NormalToHex(new Vector2(hit.point.x, hit.point.z)));
                     Debug.Log("What code so far thinks the position of the hit is: " + badPosition);
                     TryTakeTurn(hexPosition);
                     currentPieceTakingTurn = piece.hexPiece;
@@ -103,11 +101,8 @@ public class HexTakeTurn : MonoBehaviour {
                 {
                     Debug.Log("World hit");
                     Vector3 pos = hit.point;
-                    Vector2 hexPos = NormalToHex(new Vector2(pos.x, pos.z));
-                    hexPos.x = Mathf.RoundToInt(hexPos.x);
-                    hexPos.y = Mathf.RoundToInt(hexPos.y);
-                    hexPos = new Vector2((int)hexPos.x, (int)hexPos.y);
-                    if (hexWorld.selectedTiles.ContainsKey(hexPos))
+                    Vector2 hexPos = RoundHex(NormalToHex(new Vector2(pos.x, pos.z)));
+                    if (selectedTiles.ContainsKey(hexPos))
                     {
                         Debug.Log("hit selected tiles");
                         hexWorld.pieces.Remove(currentPieceTakingTurn.position);
@@ -139,13 +134,13 @@ public class HexTakeTurn : MonoBehaviour {
     //Clears all tiles that are selected colored.
     void ClearSelectedTiles()
     {
-        foreach (Vector2 tile in hexWorld.selectedTiles.Keys)
+        foreach (Vector2 tile in selectedTiles.Keys)
         {
             int q = Mathf.RoundToInt(tile.x) / GenerateHexagon.chunkSize;
             int r = Mathf.RoundToInt(tile.y) / GenerateHexagon.chunkSize;
             hexWorld.chunks[q + GenerateHexagon.WorldRadius / GenerateHexagon.chunkSize,r + GenerateHexagon.WorldRadius / GenerateHexagon.chunkSize].update = true;
         }
-        hexWorld.selectedTiles.Clear();
+        selectedTiles.Clear();
     }
 
 
@@ -206,6 +201,31 @@ public class HexTakeTurn : MonoBehaviour {
     public Vector2 HexToNormal(Vector2 hex)
     {
         return hexWorld.HexToNormal(hex);
+    }
+
+    public Vector2 RoundHex(Vector2 hex)
+    {
+        float x = hex.x;
+        float z = hex.y;
+        float y = -x - z;
+
+        int rx = Mathf.RoundToInt(x);
+        int ry = Mathf.RoundToInt(y);
+        int rz = Mathf.RoundToInt(z);
+
+        float x_diff = Mathf.Abs(rx - x);
+        float y_diff = Mathf.Abs(ry - y);
+        float z_diff = Mathf.Abs(rz - z);
+
+        if (x_diff > y_diff && x_diff > z_diff)
+            rx = -ry - rz;
+        else if (y_diff > z_diff)
+            ry = -rx - rz;
+        else
+            rz = -rx - ry;
+
+        return new Vector2(rx, rz);
+
     }
 
 

@@ -96,7 +96,8 @@ public class HexChunk : MonoBehaviour {
                 if (hexWorld.inWorld(q, r))
                 {
                     //Get the x z position of your tiles
-                    Vector2 normalPos = hexWorld.HexToNormal(new Vector2(q, r));
+                    //Subtract 0.5 from q so that the center of hexagon is at posiiton q,r not top left corner
+                    Vector2 normalPos = hexWorld.HexToNormal(new Vector2(q - 0.3333f, r -0.33333f));
 
                     Vector3 position = new Vector3(normalPos.x, 0, normalPos.y);
 
@@ -131,7 +132,9 @@ public class HexChunk : MonoBehaviour {
                     if (hexWorld.pieces.TryGetValue(new Vector2(q, r), out piece))
                     {
                         GameObject obj = Instantiate(hexWorld.piecePrefab) as GameObject;
-                        obj.transform.position = new Vector3(1.5f * q + 0.5f, height / 2.0f + 0.5f, r * (-Root3) + q * (-Root3 / 2) - Root3 / 2);
+                        //Here we don't subtract 0.5 from q because we want the player in the center
+                        Vector2 normalPiecePosition = hexWorld.HexToNormal(new Vector2(q , r));
+                        obj.transform.position = new Vector3(normalPiecePosition.x, height / 2.0f + 0.5f, normalPiecePosition.y);
                         HexPieceMon hexPiece = obj.GetComponent<HexPieceMon>();
                         hexPiece.hexPiece = piece;
                         obj.GetComponent<Renderer>().material.color = piece.team.color;

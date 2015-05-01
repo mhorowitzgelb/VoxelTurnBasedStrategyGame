@@ -17,7 +17,6 @@ public class GenerateHexagon : MonoBehaviour {
     byte[,,,] data;
     public Dictionary<Vector2, HexPiece> pieces;
     public GameObject piecePrefab;
-    public Dictionary<Vector2, int> selectedTiles;
     //Free chunks that can be used to draw/update the map
     //The key point of this is to prevent unity for instantiating and destroying a lot
     //of objects and eating up memory. (Although it doesn't actually eat up the memory. The amount of allocated memory is fine
@@ -46,7 +45,6 @@ public class GenerateHexagon : MonoBehaviour {
     // Use this for initialization
 	void Start () {
         pieces = new Dictionary<Vector2, HexPiece>();
-        selectedTiles = new Dictionary<Vector2, int>();
         data = new byte[WorldDiameter/chunkSize,WorldDiameter/chunkSize,chunkSize,chunkSize];
         chunks = new HexChunk[WorldDiameter / chunkSize, WorldDiameter / chunkSize];
         freeChunks = new List<HexChunk>();
@@ -160,7 +158,7 @@ public class GenerateHexagon : MonoBehaviour {
     public Vector2 NormalToHex(Vector2 vector)
     {
         float q = vector.x / 1.5f;
-        return new Vector2(q, (vector.y + Root3 * q) / (-Root3 / 2));
+        return new Vector2(q, (vector.y + (Root3/2) * q) / (-Root3));
     }
    
 }
