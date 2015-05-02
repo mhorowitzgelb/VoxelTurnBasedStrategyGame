@@ -136,9 +136,7 @@ public class HexTakeTurn : MonoBehaviour {
     {
         foreach (Vector2 tile in selectedTiles.Keys)
         {
-            int q = Mathf.RoundToInt(tile.x) / GenerateHexagon.chunkSize;
-            int r = Mathf.RoundToInt(tile.y) / GenerateHexagon.chunkSize;
-            hexWorld.chunks[q + GenerateHexagon.WorldRadius / GenerateHexagon.chunkSize,r + GenerateHexagon.WorldRadius / GenerateHexagon.chunkSize].update = true;
+            GetChunkFromPos(new Vector2(tile.x,tile.y)).update = true;
         }
         selectedTiles.Clear();
     }
@@ -155,7 +153,7 @@ public class HexTakeTurn : MonoBehaviour {
         
         if (!hexWorld.inWorld((int)piecePos.x, (int)piecePos.y))
             return;
-        hexWorld.chunks[(int)(piecePos.x / GenerateHexagon.chunkSize) + GenerateHexagon.WorldRadius / GenerateHexagon.chunkSize, (int)(piecePos.y / GenerateHexagon.chunkSize) + GenerateHexagon.WorldRadius / GenerateHexagon.chunkSize].update = true;
+        GetChunkFromPos(piecePos).update = true;
         if (movesLeft < 0)
             return;
         if (selectedTiles.ContainsKey(piecePos))
@@ -228,7 +226,17 @@ public class HexTakeTurn : MonoBehaviour {
 
     }
 
+    public HexChunk GetChunkFromPos(Vector2 pos)
+    {
 
+        int chunkQ = pos.x < 0 ? (int)(((pos.x + 1) / GenerateHexagon.chunkSize) - 1) : (int) (pos.x / GenerateHexagon.chunkSize);
+        int chunkR = pos.y < 0 ? (int)(((pos.y + 1) / GenerateHexagon.chunkSize) - 1) : (int) (pos.y / GenerateHexagon.chunkSize);
+
+        int chunkQShifted = chunkQ + (int)(GenerateHexagon.WorldRadius / GenerateHexagon.chunkSize);
+        int chunkRShifted = chunkR + (int)(GenerateHexagon.WorldRadius / GenerateHexagon.chunkSize);
+
+        return hexWorld.chunks[chunkQShifted, chunkRShifted];
+    }
 
 
 }

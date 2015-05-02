@@ -97,7 +97,7 @@ public class HexChunk : MonoBehaviour {
                 {
                     //Get the x z position of your tiles
                     //Subtract 0.5 from q so that the center of hexagon is at posiiton q,r not top left corner
-                    Vector2 normalPos = hexWorld.HexToNormal(new Vector2(q - 0.3333f, r -0.33333f));
+                    Vector2 normalPos = hexWorld.HexToNormal(new Vector2(q - 0.33333f, r -0.33333f));
 
                     Vector3 position = new Vector3(normalPos.x, 0, normalPos.y);
 
